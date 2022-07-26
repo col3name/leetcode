@@ -18,3 +18,30 @@ func findDuplicate(nums []int) int {
 
 	return duplicate
 }
+
+func findDuplicate2(nums []int) int {
+	duplicate := -1
+
+	left := 0
+	right := len(nums) - 1
+	cur := 0
+	count := 0
+	for left <= right {
+		cur = (left + right) / 2
+
+		for _, num := range nums {
+			if num <= cur {
+				count++
+			}
+		}
+
+		if count <= cur {
+			left = cur + 1
+		} else {
+			right = cur - 1
+			duplicate = cur
+		}
+		count = 0
+	}
+	return duplicate
+}
