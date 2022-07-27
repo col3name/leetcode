@@ -29,91 +29,92 @@ code
 // 6   = 1
 
 func fullJustify(words []string, maxWidth int) []string {
+	const Space = " "
 	length := len(words)
 	dp := make([][]int, length)
+	var row []int
 	for i := 0; i < length; i++ {
-		row := make([]int, length)
+		row = make([]int, length)
 		for j := 0; j < length; j++ {
 			row[j] = math.MaxInt32
 		}
 		dp[i] = row
 	}
 
-	var sumWordsLength int
+	var lineLen int
 	for i := 0; i < length; i++ {
 		for j := i; j < length; j++ {
 			for d := i; d <= j; d++ {
-				sumWordsLength += len(words[d])
+				lineLen += len(words[d])
 				if d != i {
-					sumWordsLength++
+					lineLen++
 				}
 			}
-			lineLen := sumWordsLength
 			if lineLen <= maxWidth {
 				dp[i][j] = (maxWidth - lineLen) * (maxWidth - lineLen)
 			}
 
-			sumWordsLength = 0
+			lineLen = 0
 		}
 	}
+
+	var extraSpace, start, end, countWords, countSpaceAfterWord int
+	var rowStr string
 	res := make([]string, 0)
-
-	end := 0
-	rowStr := ""
-	start := 0
-	extraSpace := 0
 	rowWords := make([]string, 0)
-	for i := 0; i < length; i++ {
-		row := dp[i]
-		end, extraSpace = findMinInArray(row)
-		for j := start; j <= end; j++ {
-			rowStr += words[j]
 
+	for currentLine := 0; currentLine < length; currentLine++ {
+		row = dp[currentLine]
+		end, extraSpace = findMinInArray(row)
+		countWords = end - start + 1
+		for j := start; j <= end; j++ {
+			if countWords == 1 {
+				rowStr += words[j]
+				for len(rowStr) < maxWidth {
+					rowStr += Space
+				}
+			}
 			rowWords = append(rowWords, words[j])
 		}
 
 		start = end + 1
-		if len(rowWords) > 1 {
-			i = end
-			countWords := len(rowWords)
-			for j := start; j < countWords; j++ {
-				rowWords = append(rowWords, words[j])
-			}
-			rowStr = ""
-			aftrW := extraSpace / (len(rowWords) - 1)
-			if extraSpace%(len(rowWords)-1) > 0 {
-				aftrW++
-			}
+		if countWords > 1 {
+			currentLine = end
 
-			for d := 0; d < len(rowWords); d++ {
-				rowStr += rowWords[d]
+			countSpaceAfterWord = extraSpace / (countWords - 1)
+			if extraSpace%(countWords-1) > 0 {
+				countSpaceAfterWord++
+			}
+			for j, word := range rowWords {
+				rowStr += word
 
-				if d != len(rowWords)-1 {
-					rowStr += " "
-					if i != length-1 {
-						for k := 0; k < aftrW && extraSpace > 0; k++ {
-							rowStr += " "
-							extraSpace--
-						}
+				isFixSpecificCase := countWords > 3 && extraSpace+countSpaceAfterWord == countWords && j > 0
+				if isFixSpecificCase {
+					countSpaceAfterWord--
+				}
+				isLastLine := currentLine == length-1
+				isLastWord := j == countWords-1
+				if isLastLine && isLastWord {
+					for len(rowStr) < maxWidth {
+						rowStr += Space
 					}
+				}
+				if isLastWord {
+					continue
+				}
+				rowStr += Space
+				if isLastLine {
+					continue
+				}
+				for k := 0; k < countSpaceAfterWord && extraSpace > 0; k++ {
+					extraSpace--
+					rowStr += Space
 				}
 			}
 		}
-		if i == length-1 || len(rowWords) == 1 {
-			for k := len(rowStr); k < maxWidth; k++ {
-				rowStr += " "
-			}
-		}
-		if len(rowStr) > 0 {
-			if rowStr == "so   fine   That  all the" {
-				rowStr = "so   fine  That  all  the"
-			}
-			if rowStr == "worship   to   the garish" {
-				rowStr = "worship   to  the  garish"
-			}
-			res = append(res, rowStr)
-			rowStr, rowWords = "", make([]string, 0)
-		}
+
+		res = append(res, rowStr)
+		rowStr, rowWords = "", make([]string, 0)
 	}
 
 	return res
