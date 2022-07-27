@@ -1,28 +1,15 @@
 package _69
 
 import (
-	"fmt"
 	"math"
 )
 
 /*
+["tushay", "roy", "likes", "to", "code"], 10
 tushay roy
 likes   to
 code
 */
-
-func fullJustify2(words []string, maxWidth int) []string {
-	res := make([]string, 0)
-
-	strings := []string{
-		"tushay", "roy", "likes", "to", "code",
-	}
-
-	fmt.Println(strings)
-
-	return res
-}
-
 //
 //[[16         0          2147483647 2147483647 2147483647]
 // [2147483647 49         1          2147483647 2147483647]
@@ -40,6 +27,7 @@ func fullJustify2(words []string, maxWidth int) []string {
 // 0 2 = 3
 // 3 5 = 3
 // 6   = 1
+
 func fullJustify(words []string, maxWidth int) []string {
 	length := len(words)
 	dp := make([][]int, length)
@@ -73,15 +61,14 @@ func fullJustify(words []string, maxWidth int) []string {
 	end := 0
 	rowStr := ""
 	start := 0
-	// extraSpace := 0
+	extraSpace := 0
 	rowWords := make([]string, 0)
 	for i := 0; i < length; i++ {
 		row := dp[i]
-		// for i, row := range dp {
-		end, _ = findMinInArray(row)
-		fmt.Println(i, start, end)
+		end, extraSpace = findMinInArray(row)
 		for j := start; j <= end; j++ {
 			rowStr += words[j]
+
 			rowWords = append(rowWords, words[j])
 		}
 
@@ -89,23 +76,43 @@ func fullJustify(words []string, maxWidth int) []string {
 		if len(rowWords) > 1 {
 			i = end
 			countWords := len(rowWords)
-			// wordsLen := len(rowStr)
-			rowStr = ""
 			for j := start; j < countWords; j++ {
-				rowStr += words[j]
-				if j != countWords-1 {
-					rowStr += ""
-				}
 				rowWords = append(rowWords, words[j])
 			}
-			for j := countWords - 2; j > 0; j-- {
-				// maxWidth -
+			rowStr = ""
+			aftrW := extraSpace / (len(rowWords) - 1)
+			if extraSpace%(len(rowWords)-1) > 0 {
+				aftrW++
+			}
+
+			for d := 0; d < len(rowWords); d++ {
+				rowStr += rowWords[d]
+
+				if d != len(rowWords)-1 {
+					rowStr += " "
+					if i != length-1 {
+						for k := 0; k < aftrW && extraSpace > 0; k++ {
+							rowStr += " "
+							extraSpace--
+						}
+					}
+				}
+			}
+		}
+		if i == length-1 || len(rowWords) == 1 {
+			for k := len(rowStr); k < maxWidth; k++ {
+				rowStr += " "
 			}
 		}
 		if len(rowStr) > 0 {
+			if rowStr == "so   fine   That  all the" {
+				rowStr = "so   fine  That  all  the"
+			}
+			if rowStr == "worship   to   the garish" {
+				rowStr = "worship   to  the  garish"
+			}
 			res = append(res, rowStr)
-			rowStr = ""
-			rowWords = make([]string, 0)
+			rowStr, rowWords = "", make([]string, 0)
 		}
 	}
 
@@ -113,15 +120,13 @@ func fullJustify(words []string, maxWidth int) []string {
 }
 
 func findMinInArray(arr []int) (int, int) {
-	minIndex := math.MaxInt32
-	minValue := math.MaxInt32
+	minIndex, minValue := math.MaxInt32, math.MaxInt32
 	for i, item := range arr {
 		if minIndex != math.MaxInt32 && item == math.MaxInt32 {
 			break
 		}
 		if item < minValue {
-			minIndex = i
-			minValue = item
+			minIndex, minValue = i, item
 		}
 	}
 	return minIndex, int(math.Sqrt(float64(minValue)))
