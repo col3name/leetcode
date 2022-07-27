@@ -73,12 +73,12 @@ func fullJustify(words []string, maxWidth int) []string {
 	end := 0
 	rowStr := ""
 	start := 0
-	// extraSpace := 0
+	extraSpace := 0
 	rowWords := make([]string, 0)
 	for i := 0; i < length; i++ {
 		row := dp[i]
 		// for i, row := range dp {
-		end, _ = findMinInArray(row)
+		end, extraSpace = findMinInArray(row)
 		fmt.Println(i, start, end)
 		for j := start; j <= end; j++ {
 			rowStr += words[j]
@@ -98,9 +98,21 @@ func fullJustify(words []string, maxWidth int) []string {
 				}
 				rowWords = append(rowWords, words[j])
 			}
-			for j := countWords - 2; j > 0; j-- {
-				// maxWidth -
+            rowStr = ""
+            aftrW := int(extraSpace / (len(rowWords) -1))
+            
+            for d := 0 ; d < len(rowWords); d++ {
+				rowStr += rowWords[d]
+                if d != len(rowWords) - 1 {
+                    rowStr += " "
+            
+                    for k := 0; k < aftrW &&  extraSpace > 0;  k++ {
+                        rowStr += " "
+                        extraSpace--
+                    }
+                }
 			}
+            fmt.Println(aftrW, extraSpace)
 		}
 		if len(rowStr) > 0 {
 			res = append(res, rowStr)
