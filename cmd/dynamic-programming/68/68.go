@@ -2,6 +2,7 @@ package _69
 
 import (
 	"math"
+	"strings"
 )
 
 /*
@@ -31,6 +32,66 @@ code
 func fullJustify(words []string, maxWidth int) []string {
 	const Space = " "
 	length := len(words)
+	dp := getDp(words, maxWidth, length)
+	var extraSpace, start, end, countWords, countSpaceAfterWord int
+	var rowBuild strings.Builder
+	var result, wordsOnRow []string
+
+	for currentLine := 0; currentLine < length; currentLine++ {
+		end, extraSpace = findMinInArray(dp[currentLine])
+		countWords = end - start + 1
+		for j := start; j <= end; j++ {
+			if countWords == 1 {
+				rowBuild.WriteString(words[j])
+				rowBuild.WriteString(strings.Repeat(Space, maxWidth-rowBuild.Len()))
+			}
+			wordsOnRow = append(wordsOnRow, words[j])
+		}
+
+		start = end + 1
+		if countWords > 1 {
+			currentLine = end
+
+			countSpaceAfterWord = extraSpace / (countWords - 1)
+			if extraSpace%(countWords-1) > 0 {
+				countSpaceAfterWord++
+			}
+			for j, word := range wordsOnRow {
+				rowBuild.WriteString(word)
+
+				isFixSpecificCase := countWords > 3 && extraSpace+countSpaceAfterWord == countWords && j > 0
+				if isFixSpecificCase {
+					countSpaceAfterWord--
+				}
+				isLastLine := currentLine == length-1
+				isLastWord := j == countWords-1
+				if isLastLine && isLastWord {
+					rowBuild.WriteString(strings.Repeat(Space, maxWidth-rowBuild.Len()))
+				}
+				if isLastWord {
+					continue
+				}
+				rowBuild.WriteString(Space)
+				if isLastLine {
+					continue
+				}
+				for k := 0; k < countSpaceAfterWord && extraSpace > 0; k++ {
+					extraSpace--
+					rowBuild.WriteString(Space)
+				}
+			}
+		}
+
+		result = append(result, rowBuild.String())
+		rowBuild.Reset()
+		rowBuild.Grow(maxWidth)
+		wordsOnRow = make([]string, 0)
+	}
+
+	return result
+}
+
+func getDp(words []string, maxWidth int, length int) [][]int {
 	dp := make([][]int, length)
 	var row []int
 	for i := 0; i < length; i++ {
@@ -57,67 +118,7 @@ func fullJustify(words []string, maxWidth int) []string {
 			lineLen = 0
 		}
 	}
-
-	var extraSpace, start, end, countWords, countSpaceAfterWord int
-	var rowStr string
-	res := make([]string, 0)
-	rowWords := make([]string, 0)
-
-	for currentLine := 0; currentLine < length; currentLine++ {
-		row = dp[currentLine]
-		end, extraSpace = findMinInArray(row)
-		countWords = end - start + 1
-		for j := start; j <= end; j++ {
-			if countWords == 1 {
-				rowStr += words[j]
-				for len(rowStr) < maxWidth {
-					rowStr += Space
-				}
-			}
-			rowWords = append(rowWords, words[j])
-		}
-
-		start = end + 1
-		if countWords > 1 {
-			currentLine = end
-
-			countSpaceAfterWord = extraSpace / (countWords - 1)
-			if extraSpace%(countWords-1) > 0 {
-				countSpaceAfterWord++
-			}
-			for j, word := range rowWords {
-				rowStr += word
-
-				isFixSpecificCase := countWords > 3 && extraSpace+countSpaceAfterWord == countWords && j > 0
-				if isFixSpecificCase {
-					countSpaceAfterWord--
-				}
-				isLastLine := currentLine == length-1
-				isLastWord := j == countWords-1
-				if isLastLine && isLastWord {
-					for len(rowStr) < maxWidth {
-						rowStr += Space
-					}
-				}
-				if isLastWord {
-					continue
-				}
-				rowStr += Space
-				if isLastLine {
-					continue
-				}
-				for k := 0; k < countSpaceAfterWord && extraSpace > 0; k++ {
-					extraSpace--
-					rowStr += Space
-				}
-			}
-		}
-
-		res = append(res, rowStr)
-		rowStr, rowWords = "", make([]string, 0)
-	}
-
-	return res
+	return dp
 }
 
 func findMinInArray(arr []int) (int, int) {

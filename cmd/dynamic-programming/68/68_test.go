@@ -1,7 +1,6 @@
 package _69
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -20,13 +19,6 @@ type input struct {
 	words    []string
 }
 
-func Test2(t *testing.T) {
-	maxWidth := 25
-	words := []string{"Give", "me", "my", "Romeo;", "and,", "when", "he", "shall", "die,", "Take", "him", "and", "cut", "him", "out", "in", "little", "stars,", "And", "he", "will", "make", "the", "face", "of", "heaven", "so", "fine", "That", "all", "the", "world", "will", "be", "in", "love", "with", "night", "And", "pay", "no", "worship", "to", "the", "garish", "sun."}
-	justify := fullJustify(words, maxWidth)
-	fmt.Println(justify)
-}
-
 func Test(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -40,7 +32,12 @@ func Test(t *testing.T) {
 				words:    []string{"Listen", "to", "many,", "speak", "to", "a", "few."},
 			},
 			expected: []string{
-				"Listen", "to    ", "many, ", "speak ", "to   a", "few.  ",
+				"Listen",
+				"to    ",
+				"many, ",
+				"speak ",
+				"to   a",
+				"few.  ",
 			},
 		},
 		{
