@@ -1,8 +1,10 @@
 package _3
 
-import "strings"
+import (
+	"strings"
+)
 
-func Roman(number int) string {
+func intToRoman(number int) string {
 	conversions := []struct {
 		value int
 		digit string
