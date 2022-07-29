@@ -1,0 +1,27 @@
+type mySlice []string
+
+func (s mySlice) Len() int {
+    return len(s)
+}
+
+func (s mySlice) Less(i, j int) bool {
+    return s[i] + s[j] > s[j] + s[i]
+}
+
+func (s mySlice) Swap(i, j int) {
+    s[i], s[j] = s[j], s[i]
+}
+
+func largestNumber(nums []int) string {
+    strs := make([]string, len(nums))
+    flag := true
+    for i := 0; i < len(nums); i++ {
+        strs[i] = strconv.Itoa(nums[i])
+        flag = flag && (nums[i] == 0)
+    }
+    if flag {
+        return "0"
+    } 
+    sort.Sort(mySlice(strs))
+    return strings.Join(strs, "")
+}
