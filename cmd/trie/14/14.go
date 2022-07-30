@@ -1,6 +1,7 @@
 package _14
 
 import (
+	"fmt"
 	"math"
 	"strings"
 )
@@ -103,4 +104,53 @@ func isCommonPrefix(strs []string, length int) bool {
 		}
 	}
 	return true
+}
+
+// devide and conquer
+func longestCommonPrefixVersion3(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+	return longestCommonPrefixFn(strs, 0, len(strs)-1)
+}
+
+func longestCommonPrefixFn(strs []string, left, right int) string {
+	if left == right {
+		return strs[left]
+	}
+	middle := (left + right) / 2
+	leftResult := longestCommonPrefixFn(strs, left, middle)
+	rightResult := longestCommonPrefixFn(strs, middle+1, right)
+	return commonPrefix(leftResult, rightResult)
+}
+
+func commonPrefix(left, right string) string {
+	min := len(left)
+	if len(right) < min {
+		min = len(right)
+	}
+	for i := 0; i < min; i++ {
+		if left[i] != right[i] {
+			return left[0:i]
+		}
+	}
+	return left[0:min]
+}
+
+func longestCommonPrefixVersion4(strs []string) string {
+	length := len(strs)
+	if length == 0 {
+		return ""
+	}
+	prefix := strs[0]
+	for i := 1; i < length; i++ {
+		fmt.Println(strs[i])
+		for !strings.HasPrefix(strs[i], prefix) {
+			prefix = prefix[0 : len(prefix)-1]
+			if len(prefix) == 0 {
+				return ""
+			}
+		}
+	}
+	return prefix
 }
