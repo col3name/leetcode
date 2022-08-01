@@ -19,5 +19,4 @@ func TestStack_Last(t *testing.T) {
 	assert.Equal(t, 10, stack.Last())
 	stack.Pop()
 	assert.Equal(t, 0, stack.Size())
-	//assert.Equal(t, 10, stack.Last())
 }
