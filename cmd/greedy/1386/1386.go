@@ -1,16 +1,10 @@
 package _1386
 
 import (
-	"fmt"
 	"math"
 )
 
-//[
-// [false true  true  false false false false true  false false]
-// [false false false false false true  false false false false]
-// [true  false false false false false false false false true]
-//]
-func maxNumberOfFamilies(n int, reservedSeats [][]int) int {
+func maxNumberOfFamilies(rowNumbers int, reservedSeats [][]int) int {
 	maxRow := 0
 	minRow := math.MaxInt32
 	for _, pair := range reservedSeats {
@@ -23,47 +17,42 @@ func maxNumberOfFamilies(n int, reservedSeats [][]int) int {
 	}
 	countRow := maxRow - minRow + 1
 	if maxRow == minRow {
-		countRow = n
+		countRow = rowNumbers
 	}
-	fmt.Println(n, countRow, maxRow, minRow)
-	seats := make([][]bool, countRow)
-	for i := 0; i < len(seats); i++ {
-		seats[i] = make([]bool, 10)
+
+	mapper := map[int]int16{
+		1:  0b1000000000,
+		2:  0b0100000000,
+		3:  0b0010000000,
+		4:  0b0001000000,
+		5:  0b0000100000,
+		6:  0b0000010000,
+		7:  0b0000001000,
+		8:  0b0000000100,
+		9:  0b0000000010,
+		10: 0b0000000001,
 	}
-	var seat []int
+	seats := make([]int16, countRow)
 	for i := 0; i < len(reservedSeats); i++ {
-		seat = reservedSeats[i]
-		seats[seat[0]-minRow][seat[1]-1] = true
+		seats[reservedSeats[i][0]-minRow] |= mapper[reservedSeats[i][1]]
 	}
 	result := 0
 
-	for i, seat := range seats {
-		// 2 3 4 5
-		if !seat[1] && !seat[2] && !seat[3] && !seat[4] {
-			result++
-			seats[i][1] = true
-			seats[i][2] = true
-			seats[i][3] = true
-			seats[i][4] = true
-		}
-		// 6 7 8 9
-		if !seat[5] && !seat[6] && !seat[7] && !seat[8] {
-			result++
-			seats[i][5] = true
-			seats[i][6] = true
-			seats[i][7] = true
-			seats[i][8] = true
-		}
-		// 4 5 6 7
-		if !seat[3] && !seat[4] && !seat[5] && !seat[6] {
-			result++
-			seats[i][3] = true
-			seats[i][4] = true
-			seats[i][5] = true
-			seats[i][6] = true
-		}
+	masks := []int16{0b0111100000, 0b0001111000, 0b0000011110}
 
+	var left, middle, right bool
+	for _, row := range seats {
+		left = row&masks[0] == 0
+		middle = row&masks[1] == 0
+		right = row&masks[2] == 0
+		if left && right {
+			result += 2
+		} else if left || middle || right {
+			result++
+		}
 	}
-	result += (n - countRow) * 2
+
+	result += (rowNumbers - countRow) * 2
+
 	return result
 }
