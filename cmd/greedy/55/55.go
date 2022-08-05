@@ -1,4 +1,4 @@
-package greedy
+package _5
 
 func canJump(nums []int) bool {
 	max := nums[0]
