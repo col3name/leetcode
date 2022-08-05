@@ -1,14 +1,14 @@
 package _11
 
 func maxArea(height []int) int {
-	maxArea := 0
+	result := 0
 	var tmpArea int
 	left := 0
 	right := len(height) - 1
 	for left < right {
 		tmpArea = getRectangleArea(left, right, height[left], height[right])
-		if tmpArea > maxArea {
-			maxArea = tmpArea
+		if tmpArea > result {
+			result = tmpArea
 		}
 		if height[left] < height[right] {
 			left++
@@ -17,22 +17,22 @@ func maxArea(height []int) int {
 		}
 	}
 
-	return maxArea
+	return result
 }
 
 func maxAreaVersionOne(height []int) int {
-	maxArea := 0
+	result := 0
 	var tmpArea int
 
 	for i := 0; i < len(height); i++ {
 		for j := i + 1; j < len(height); j++ {
 			tmpArea = getRectangleArea(i, j, height[i], height[j])
-			if tmpArea > maxArea {
-				maxArea = tmpArea
+			if tmpArea > result {
+				result = tmpArea
 			}
 		}
 	}
-	return maxArea
+	return result
 }
 
 func getRectangleArea(leftIndex, rightIndex, leftHeight, rightHeight int) int {
