@@ -7,6 +7,7 @@ import (
 type Item struct {
 	Left  int16
 	Right int16
+	Value float32
 }
 type MinHeap []Item
 
@@ -18,10 +19,7 @@ func (h MinHeap) First() interface{} {
 }
 
 func (h MinHeap) Less(i int, j int) bool {
-	left := float64(h[i].Left) / float64(h[i].Right)
-	right := float64(h[j].Left) / float64(h[j].Right)
-	val := left < right
-	return val
+	return h[i].Value < h[j].Value
 }
 
 func (h MinHeap) Swap(i int, j int) {
@@ -48,6 +46,7 @@ func kthSmallestPrimeFraction(arr []int, k int) []int {
 			heap.Push(&pq, Item{
 				Left:  int16(arr[i]),
 				Right: int16(arr[j]),
+				Value: float32(arr[i]) / float32(arr[j]),
 			})
 		}
 	}
