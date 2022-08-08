@@ -1,29 +1,27 @@
 package _300
 
 func lengthOfLIS(nums []int) int {
-	if len(nums) == 0 {
+	length := len(nums)
+	if length == 0 {
 		return 0
 	}
-	if len(nums) == 1 {
+	if length == 1 {
 		return 1
 	}
-	max := 0
-	length := len(nums)
+	result := 0
 	dp := make([]int, length)
 	for i := range dp {
 		dp[i] = 1
 	}
-	for i := 1; i < length; i++ {
-		for j := 0; j < i; j++ {
-			if nums[i] > nums[j] {
-				if dp[i] > dp[j]+1 {
-					dp[i] = dp[j] + 1
-				}
+	for i := length - 1; i >= 0; i-- {
+		for j := i + 1; j < length; j++ {
+			if nums[j] > nums[i] && dp[j]+1 > dp[i] {
+				dp[i] = dp[j] + 1
 			}
 		}
-		if dp[i] > max {
-			max = dp[i]
+		if dp[i] > result {
+			result = dp[i]
 		}
 	}
-	return max
+	return result
 }
