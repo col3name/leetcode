@@ -17,27 +17,27 @@ func Constructor() Codec {
 	return Codec{}
 }
 
-const NilIdentifier = "0"
 const NodeValueSeparator = ","
+const NilValue = "nil"
 
-func (this *Codec) serialize(root *TreeNode) string {
+func (c *Codec) serialize(root *TreeNode) string {
 	if root == nil {
-		return NilIdentifier + NodeValueSeparator
+		return NilValue + NodeValueSeparator
 	}
-	return strconv.Itoa(root.Val) + NodeValueSeparator + this.serialize(root.Left) + this.serialize(root.Right)
+	return strconv.Itoa(root.Val) + NodeValueSeparator + c.serialize(root.Left) + c.serialize(root.Right)
 }
 
-func (this *Codec) deserialize(data string) *TreeNode {
-	nodesSlice := strings.Split(data, NodeValueSeparator)
+func (c *Codec) deserialize(data string) *TreeNode {
+	array := strings.Split(data, NodeValueSeparator)
 	var decodeTree func() *TreeNode
 	decodeTree = func() *TreeNode {
-		if nodesSlice[0] == NilIdentifier {
-			nodesSlice = nodesSlice[1:]
+		if array[0] == NilValue {
+			array = array[1:]
 			return nil
 		}
-		num, _ := strconv.Atoi(nodesSlice[0])
-		nodesSlice = nodesSlice[1:]
-		root := &TreeNode{num, nil, nil}
+		number, _ := strconv.Atoi(array[0])
+		array = array[1:]
+		root := &TreeNode{number, nil, nil}
 		root.Left = decodeTree()
 		root.Right = decodeTree()
 		return root
