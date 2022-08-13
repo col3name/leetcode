@@ -6,6 +6,9 @@ type ListNode struct {
 }
 
 func oddEvenList(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
 	evenHead := head.Next
 	even := head.Next
 	odd := head
