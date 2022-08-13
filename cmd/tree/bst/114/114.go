@@ -7,14 +7,10 @@ type TreeNode struct {
 }
 
 func flatten(root *TreeNode) {
-	helper(root)
-}
-
-func helper(root *TreeNode) {
 	if root == nil {
 		return
 	}
-	helper(root.Left)
+	flatten(root.Left)
 	temp := root.Right
 	root.Right = root.Left
 	root.Left = nil
@@ -23,5 +19,5 @@ func helper(root *TreeNode) {
 	}
 	root.Right = temp
 
-	helper(root.Right)
+	flatten(root.Right)
 }
