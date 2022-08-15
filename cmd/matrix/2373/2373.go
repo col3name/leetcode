@@ -19,8 +19,8 @@ func largestLocal(grid [][]int) [][]int {
 
 func findMax(grid [][]int, i int, j int) int {
 	max := math.MinInt32
-	for r := i; r < i+2; r++ {
-		for c := j; c < j+2; c++ {
+	for r := i; r <= i+2; r++ {
+		for c := j; c <= j+2; c++ {
 			x := grid[r][c]
 			if x > max {
 				max = x
