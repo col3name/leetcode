@@ -34,18 +34,6 @@ func (d *DoublyLinkedList) append(Key, Val int) *Node {
 		Key: Key,
 		Val: Val,
 	}
-	//if d.head == nil {
-	//	d.head = node
-	//	d.tail = node
-	//} else {
-	//	currentNode := d.head
-	//	for currentNode.next != nil {
-	//		currentNode = currentNode.next
-	//	}
-	//	node.prev = currentNode
-	//	currentNode.next = node
-	//	d.tail = node
-	//}
 	var p *Node
 	if d.tail.prev == nil {
 		p = d.tail.prev
@@ -63,13 +51,6 @@ func (d *DoublyLinkedList) pop() *Node {
 }
 
 func (d *DoublyLinkedList) remove(node *Node) *Node {
-	//if node == nil {
-	//	d.head = nil
-	//	d.tail = nil
-	//} else {
-	//	node.prev.next = node.next
-	//	node.next.prev = node.prev
-	//}
 	node.prev.next = node.next
 	node.next.prev = node.prev
 	d.Size--
