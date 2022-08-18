@@ -3,7 +3,7 @@ package _56
 // 56. Merge Intervals
 import "sort"
 
-func merge(intervals [][]int) [][]int {
+func merge1(intervals [][]int) [][]int {
 	sort.Slice(intervals, func(i, j int) bool {
 		if intervals[i][0] < intervals[j][0] {
 			return true
@@ -32,4 +32,29 @@ func merge(intervals [][]int) [][]int {
 		}
 	}
 	return merged
+}
+
+func merge(intervals [][]int) [][]int {
+	if len(intervals) == 0 {
+		return intervals
+	}
+	l, r := [][]int{}, [][]int{}
+	start, end := intervals[0][0], intervals[0][1]
+	for i := 1; i < len(intervals); i++ {
+		interval := intervals[i]
+		if interval[1] < start {
+			l = append(l, interval)
+		} else if interval[0] > end {
+			r = append(r, interval)
+		} else {
+			if interval[0] < start {
+				start = interval[0]
+			}
+			if interval[1] > end {
+				end = interval[1]
+			}
+		}
+	}
+
+	return append(append(l, []int{start, end}), r...)
 }
