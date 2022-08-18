@@ -22,13 +22,6 @@ func solveNQueens(size int) [][]string {
 	col := &HashSet{}
 	diag1 := &HashSet{}
 	diag2 := &HashSet{}
-	board := make([][]string, size)
-	for i := range board {
-		board[i] = make([]string, size)
-		for j := 0; j < size; j++ {
-			board[i][j] = "."
-		}
-	}
 
 	var result [][]string
 	var helper func(row int, list []string)
@@ -47,14 +40,12 @@ func solveNQueens(size int) [][]string {
 				continue
 			}
 
-			list = append(list, fillRow(i, size))
 			col.Add(i)
 			diag1.Add(row + i)
 			diag2.Add(row - i)
 
-			helper(row+1, list)
+			helper(row+1, append(list, fillRow(i, size)))
 
-			list = list[:len(list)-1]
 			col.Remove(i)
 			diag1.Remove(row + i)
 			diag2.Remove(row - i)
