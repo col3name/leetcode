@@ -4,13 +4,15 @@ import "math"
 
 func coinChange(coins []int, amount int) int {
 	dp := make([]int, amount+1)
-
 	var minCoin int
+	var coin int
+	var tmp int
 	for i := 1; i <= amount; i++ {
 		minCoin = math.MaxInt32
-		for _, coin := range coins {
-			if i-coin >= 0 && dp[i-coin] != -1 && dp[i-coin]+1 < minCoin {
-				minCoin = dp[i-coin] + 1
+		for _, coin = range coins {
+			tmp = dp[i-coin]
+			if i-coin >= 0 && tmp != -1 && tmp+1 < minCoin {
+				minCoin = tmp + 1
 			}
 		}
 		if minCoin == math.MaxInt32 {
