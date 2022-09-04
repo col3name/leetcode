@@ -16,23 +16,37 @@ type Item struct {
 	Col   int
 }
 
+type ItemQ struct {
+	Row  int
+	Col  int
+	node *TreeNode
+}
+
 func verticalTraversal(root *TreeNode) [][]int {
-	m := make(map[int][]Item)
-	var helper func(node *TreeNode, row, col int)
-	helper = func(node *TreeNode, row, col int) {
+	m := make(map[int][]*Item)
+	q := make([]*ItemQ, 0, 10)
+	q = append(q, &ItemQ{
+		Row:  0,
+		Col:  0,
+		node: root,
+	})
+	for len(q) > 0 {
+		item := q[0]
+		q = q[1:]
+		node := item.node
 		if node == nil {
-			return
+			continue
 		}
-		_, ok := m[col]
-		if !ok {
-			m[col] = make([]Item, 0, 4)
+		col := item.Col
+		row := item.Row
+		if m[col] == nil {
+			m[col] = make([]*Item, 0, 4)
 		}
-		m[col] = append(m[col], Item{Value: node.Val, Row: row, Col: col})
-		helper(node.Left, row+1, col-1)
-		helper(node.Right, row+1, col+1)
+		m[col] = append(m[col], &Item{Value: node.Val, Row: row, Col: col})
+		q = append(q, &ItemQ{Row: row + 1, Col: col - 1, node: node.Left})
+		q = append(q, &ItemQ{Row: row + 1, Col: col + 1, node: node.Right})
 	}
 
-	helper(root, 0, 0)
 	keys := make([]int, 0, len(m))
 	for key := range m {
 		keys = append(keys, key)
@@ -40,7 +54,7 @@ func verticalTraversal(root *TreeNode) [][]int {
 
 	sort.Ints(keys)
 	result := make([][]int, len(keys))
-	var ints []Item
+	var ints []*Item
 	for i, key := range keys {
 		ints = m[key]
 		sort.Slice(ints, func(i, j int) bool {
