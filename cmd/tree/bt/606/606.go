@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// 606. Construct String from Binary Tree
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
