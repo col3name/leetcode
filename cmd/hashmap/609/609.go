@@ -12,6 +12,7 @@ func findDuplicate(paths []string) [][]string {
 	var fileContent string
 	var data []string
 	var fileData []string
+	builder := strings.Builder{}
 	for _, path := range paths {
 		fileData = strings.Split(path, " ")
 		for _, file := range fileData[1:] {
@@ -20,7 +21,11 @@ func findDuplicate(paths []string) [][]string {
 			if mp[fileContent] == nil {
 				mp[fileContent] = make([]string, 0, 10)
 			}
-			mp[fileContent] = append(mp[fileContent], fileData[0]+"/"+data[0])
+			builder.WriteString(fileData[0])
+			builder.WriteString("/")
+			builder.WriteString(data[0])
+			mp[fileContent] = append(mp[fileContent], builder.String())
+			builder.Reset()
 		}
 	}
 	result := make([][]string, 0, len(mp))
